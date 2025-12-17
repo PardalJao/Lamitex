@@ -1,8 +1,16 @@
 import { GoogleGenAI, Chat } from "@google/genai";
 import { SYSTEM_INSTRUCTION } from '../constants';
 
-// Get API Key from defined process.env.API_KEY
-const API_KEY = process.env.API_KEY || '';
+// Safely access the API KEY defined in vite.config.ts
+const getApiKey = () => {
+  try {
+    return process.env.API_KEY || '';
+  } catch (e) {
+    return '';
+  }
+};
+
+const API_KEY = getApiKey();
 
 // Initialize GenAI safely
 const ai = new GoogleGenAI({ apiKey: API_KEY });
@@ -29,7 +37,7 @@ export const sendMessageToAgent = async (
   attachment?: { data: string; mimeType: string }
 ): Promise<string> => {
   if (!API_KEY) {
-    return "A chave de API não foi configurada. Por favor, adicione a variável API_KEY no painel do Vercel.";
+    return "Atenção: API_KEY não configurada no Vercel. Vá em Settings > Environment Variables e adicione a API_KEY.";
   }
 
   try {
@@ -58,10 +66,13 @@ export const sendMessageToAgent = async (
     }
 
     const result = await chat.sendMessage({ message: messageContent });
-    return result.text || "Desculpe, não consegui processar sua solicitação.";
-  } catch (error) {
+    return result.text || "Desculpe, a Nath não conseguiu processar sua solicitação agora.";
+  } catch (error: any) {
     console.error("Gemini Chat Error:", error);
-    return "Erro de conexão com a Nath. Verifique se a chave de API está correta ou se o limite foi atingido.";
+    if (error?.message?.includes('API_KEY')) {
+        return "Erro de autenticação: Verifique se sua chave de API do Gemini é válida.";
+    }
+    return "Erro de conexão com a Nath. Tente novamente em instantes.";
   }
 };
 
@@ -79,7 +90,7 @@ export interface SearchResult {
 
 export const searchProspects = async (niche: string, location: string): Promise<SearchResult> => {
   if (!API_KEY) {
-    return { text: "API_KEY ausente.", prospects: [] };
+    return { text: "API_KEY ausente nas configurações do servidor.", prospects: [] };
   }
 
   try {
@@ -145,6 +156,6 @@ export const searchProspects = async (niche: string, location: string): Promise<
     return { text, prospects, groundingLinks };
   } catch (error) {
     console.error("Gemini Prospecting Error:", error);
-    return { text: "Não foi possível realizar a busca no Google Maps no momento.", prospects: [] };
+    return { text: "Erro ao consultar o serviço de prospecção. Verifique a chave de API.", prospects: [] };
   }
 };
