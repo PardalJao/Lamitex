@@ -1,10 +1,11 @@
-
-import { GoogleGenAI, Chat, GenerativeModel } from "@google/genai";
+import { GoogleGenAI, Chat } from "@google/genai";
 import { SYSTEM_INSTRUCTION } from '../constants';
 
-// Initialize GenAI
-// Always use const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Get API Key from defined process.env.API_KEY
+const API_KEY = process.env.API_KEY || '';
+
+// Initialize GenAI safely
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 // Chat Model Instance
 let chatSession: Chat | null = null;
@@ -12,11 +13,10 @@ let chatSession: Chat | null = null;
 export const getChatSession = (): Chat => {
   if (!chatSession) {
     chatSession = ai.chats.create({
-      // Using gemini-3-flash-preview for general text tasks as per guidelines
       model: 'gemini-3-flash-preview',
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
-        temperature: 0.4, // Lower temperature for more consistent technical answers
+        temperature: 0.4,
         maxOutputTokens: 1000,
       },
     });
@@ -28,13 +28,16 @@ export const sendMessageToAgent = async (
   text: string, 
   attachment?: { data: string; mimeType: string }
 ): Promise<string> => {
+  if (!API_KEY) {
+    return "A chave de API não foi configurada. Por favor, adicione a variável API_KEY no painel do Vercel.";
+  }
+
   try {
     const chat = getChatSession();
     
     let messageContent: any;
 
     if (attachment) {
-      // Clean base64 string if it contains the data URL prefix
       const cleanData = attachment.data.split(',')[1] || attachment.data;
       
       messageContent = {
@@ -46,7 +49,7 @@ export const sendMessageToAgent = async (
             }
           },
           {
-            text: text || " " // Ensure there is some text if only media is sent
+            text: text || " "
           }
         ]
       };
@@ -54,12 +57,11 @@ export const sendMessageToAgent = async (
       messageContent = text;
     }
 
-    // Accessing .text property directly from GenerateContentResponse
     const result = await chat.sendMessage({ message: messageContent });
     return result.text || "Desculpe, não consegui processar sua solicitação.";
   } catch (error) {
     console.error("Gemini Chat Error:", error);
-    return "Erro de conexão com o Assistente Técnico. Verifique sua chave de API ou conexão.";
+    return "Erro de conexão com a Nath. Verifique se a chave de API está correta ou se o limite foi atingido.";
   }
 };
 
@@ -75,8 +77,11 @@ export interface SearchResult {
   groundingLinks?: { title: string, uri: string }[];
 }
 
-// Prospecting Tool - Uses Google Maps Grounding
 export const searchProspects = async (niche: string, location: string): Promise<SearchResult> => {
+  if (!API_KEY) {
+    return { text: "API_KEY ausente.", prospects: [] };
+  }
+
   try {
     const prompt = `Find 5 businesses in the niche "${niche}" in or near "${location}".
     
@@ -95,7 +100,6 @@ export const searchProspects = async (niche: string, location: string): Promise<
 
     Use the Google Maps tool to find real data.`;
 
-    // Maps grounding is only supported in Gemini 2.5 series models.
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
@@ -104,7 +108,7 @@ export const searchProspects = async (niche: string, location: string): Promise<
         toolConfig: {
           retrievalConfig: {
             latLng: {
-              latitude: -23.5505, // Default to SP
+              latitude: -23.5505,
               longitude: -46.6333
             }
           }
@@ -112,10 +116,8 @@ export const searchProspects = async (niche: string, location: string): Promise<
       }
     });
 
-    // Accessing .text property directly from response
     const text = response.text || "";
     
-    // Extract JSON from code block
     let prospects: Prospect[] = [];
     const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) || text.match(/```\n([\s\S]*?)\n```/);
     
@@ -127,7 +129,6 @@ export const searchProspects = async (niche: string, location: string): Promise<
       }
     }
 
-    // Extract grounding links as required by guidelines for Google Maps usage
     const groundingLinks: { title: string, uri: string }[] = [];
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
     if (chunks) {
