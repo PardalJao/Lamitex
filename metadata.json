@@ -1,0 +1,8 @@
+{
+  "name": "Lamitex Sales OS",
+  "description": "An intelligent CRM and prospecting tool for the textile industry, featuring AI-driven technical consulting and sales pipeline management.",
+  "requestFramePermissions": [
+    "geolocation",
+    "microphone"
+  ]
+}
