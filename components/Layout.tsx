@@ -33,7 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ currentView, setView, children }) => {
 
   return (
     <div className="flex h-screen bg-slate-100 overflow-hidden text-slate-900">
-      {/* Sidebar Overlay for Mobile */}
+      {/* Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-30 lg:hidden backdrop-blur-sm transition-opacity"
@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ currentView, setView, children }) => {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Original Sidebar Style */}
       <aside className={`
         fixed inset-y-0 left-0 w-72 bg-slate-900 text-slate-300 flex flex-col shadow-xl z-40 transition-transform duration-300 transform
         lg:translate-x-0 lg:static lg:inset-auto
@@ -50,7 +50,7 @@ const Layout: React.FC<LayoutProps> = ({ currentView, setView, children }) => {
         <div className="p-7 border-b border-slate-700 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-black text-white tracking-tight">
-              LAMITEX <span className="text-lamitex-blue text-sm align-top">OS</span>
+              LAMITEX <span className="text-blue-500 text-sm align-top">OS</span>
             </h1>
             <p className="text-xs text-slate-500 mt-1 uppercase tracking-widest font-bold">Sales Intelligence</p>
           </div>
@@ -66,7 +66,7 @@ const Layout: React.FC<LayoutProps> = ({ currentView, setView, children }) => {
               onClick={() => handleSetView(item.id)}
               className={`w-full flex items-center space-x-4 px-5 py-4 rounded-2xl transition-all duration-200 ${
                 currentView === item.id
-                  ? 'bg-lamitex-blue text-white shadow-lg shadow-blue-900/40 translate-x-1'
+                  ? 'bg-blue-600 text-white shadow-lg translate-x-1'
                   : 'hover:bg-slate-800 hover:text-white'
               }`}
             >
@@ -80,7 +80,7 @@ const Layout: React.FC<LayoutProps> = ({ currentView, setView, children }) => {
 
         <div className="p-5 border-t border-slate-800">
           <div className="bg-slate-800/50 rounded-2xl p-4 flex items-center space-x-4 border border-slate-700/50">
-            <div className="w-10 h-10 rounded-full bg-lamitex-blue flex items-center justify-center text-xs text-white font-black shadow-inner">
+            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-xs text-white font-black">
               LA
             </div>
             <div className="overflow-hidden">
@@ -104,10 +104,6 @@ const Layout: React.FC<LayoutProps> = ({ currentView, setView, children }) => {
              >
                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
              </button>
-             <div className="h-10 w-px bg-slate-200 lg:hidden"></div>
-             {currentView === 'chat' && (
-               <img src={NATH_PHOTO} className="w-10 h-10 rounded-full object-cover border border-slate-200" alt="Nath" />
-             )}
              <h2 className="text-xl lg:text-2xl font-black text-slate-800 tracking-tight">
               {menuItems.find(m => m.id === currentView)?.label}
             </h2>
@@ -115,16 +111,16 @@ const Layout: React.FC<LayoutProps> = ({ currentView, setView, children }) => {
           
           <div className="flex items-center space-x-5">
              <div className="hidden sm:flex flex-col items-end">
-                <span className="text-xs text-slate-400 font-black uppercase tracking-widest">Build</span>
-                <span className="text-xs text-slate-600 font-bold">1.4.1 (Accessibility Update)</span>
+                <span className="text-xs text-slate-400 font-black uppercase tracking-widest">BUILD</span>
+                <span className="text-xs text-slate-600 font-bold">1.4.0 (Nath Mobile)</span>
              </div>
-             <button className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors">
+             <button className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
              </button>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-5 lg:p-8">
           {children}
         </div>
       </main>
