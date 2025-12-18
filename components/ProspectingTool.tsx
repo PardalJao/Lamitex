@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { searchProspects, Prospect } from '../services/geminiService';
 import { Lead, LeadSegment } from '../types';
@@ -45,7 +44,7 @@ const ProspectingTool: React.FC<ProspectingToolProps> = ({ addLead }) => {
     const prospectKey = `${p.companyName}-${p.address}`;
     if (addedProspects.has(prospectKey)) return;
 
-    // Determine the segment based on the niche to satisfy the required property in Lead
+    // Determine the segment based on the niche
     let segment: LeadSegment = 'Indústria';
     const nicheLower = nicheInput.toLowerCase();
     if (nicheLower.includes('tapeçaria') || nicheLower.includes('automotiva')) {
@@ -72,33 +71,33 @@ const ProspectingTool: React.FC<ProspectingToolProps> = ({ addLead }) => {
   };
 
   return (
-    <div className="h-full flex flex-col space-y-6">
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-        <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center">
-          <span className="text-2xl mr-2">🌍</span> Prospecção Inteligente (Google Maps)
+    <div className="h-full flex flex-col space-y-8 p-6 lg:p-8">
+      <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+        <h2 className="text-2xl font-black text-slate-800 mb-5 flex items-center">
+          <span className="text-3xl mr-4">🌍</span> Prospecção Inteligente (Maps)
         </h2>
-        <p className="text-slate-500 mb-6">
-          Defina o nicho e a localização para encontrar novos clientes e adicionar diretamente ao pipeline.
+        <p className="text-base text-slate-500 mb-8 font-medium">
+          Defina o nicho e a localização para encontrar novos clientes e adicionar diretamente ao pipeline de vendas da Lamitex.
         </p>
 
         {/* Inputs Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Nicho / Segmento</label>
+            <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-widest">Nicho / Segmento</label>
             <input 
               type="text" 
               placeholder="Ex: Tapeçaria, Brindes, Calçados..." 
               value={nicheInput}
               onChange={(e) => setNicheInput(e.target.value)}
-              className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-lamitex-blue placeholder-slate-400"
+              className="w-full bg-white text-slate-900 border border-slate-300 rounded-2xl px-5 py-4 text-base focus:outline-none focus:ring-4 focus:ring-lamitex-blue/10 focus:border-lamitex-blue placeholder-slate-400 font-bold transition-all"
             />
             {/* Quick Select Tags */}
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-4">
               {SUGGESTED_NICHES.map(n => (
                 <button
                   key={n.id}
                   onClick={() => setNicheInput(n.label)}
-                  className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full hover:bg-slate-200 transition-colors border border-slate-200"
+                  className="text-xs font-black bg-slate-100 text-slate-600 px-4 py-2 rounded-full hover:bg-lamitex-blue hover:text-white transition-all border border-slate-200"
                 >
                   {n.icon} {n.label}
                 </button>
@@ -107,16 +106,16 @@ const ProspectingTool: React.FC<ProspectingToolProps> = ({ addLead }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Localização Alvo</label>
+            <label className="block text-sm font-black text-slate-700 mb-2 uppercase tracking-widest">Localização Alvo</label>
             <div className="relative">
               <input 
                 type="text" 
                 placeholder="Ex: Bom Retiro, SP" 
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-lamitex-blue placeholder-slate-400"
+                className="w-full bg-white text-slate-900 border border-slate-300 rounded-2xl px-5 py-4 pl-12 text-base focus:outline-none focus:ring-4 focus:ring-lamitex-blue/10 focus:border-lamitex-blue placeholder-slate-400 font-bold transition-all"
               />
-              <span className="absolute left-3 top-3.5 text-slate-400">📍</span>
+              <span className="absolute left-4 top-4 text-xl">📍</span>
             </div>
           </div>
         </div>
@@ -124,62 +123,65 @@ const ProspectingTool: React.FC<ProspectingToolProps> = ({ addLead }) => {
         <button 
            onClick={handleSearch}
            disabled={!nicheInput || isSearching}
-           className="w-full md:w-auto bg-lamitex-blue text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-800 disabled:opacity-50 transition-colors shadow-lg shadow-blue-900/30 flex items-center justify-center space-x-2"
+           className="w-full md:w-auto bg-lamitex-blue text-white px-10 py-4 rounded-2xl font-black text-lg hover:bg-blue-800 disabled:opacity-50 transition-all shadow-xl shadow-blue-900/30 flex items-center justify-center space-x-3 active:scale-[0.98]"
         >
           {isSearching ? (
              <>
-               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-               <span>Processando...</span>
+               <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+               <span>Processando Nath...</span>
              </>
           ) : (
              <>
-               <span>🔍</span>
-               <span>Buscar Leads</span>
+               <span className="text-xl">🔍</span>
+               <span>Buscar Leads Agora</span>
              </>
           )}
         </button>
       </div>
 
       {/* Results Area */}
-      <div className="flex-1 bg-white p-6 rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-        <h3 className="text-lg font-bold text-slate-700 mb-4 border-b border-slate-100 pb-2">Resultados Encontrados</h3>
+      <div className="flex-1 bg-white p-8 rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+        <h3 className="text-xl font-black text-slate-700 mb-6 border-b border-slate-100 pb-4 uppercase tracking-tighter">Resultados Estratégicos</h3>
         
         <div className="flex-1 overflow-y-auto custom-scrollbar">
             {isSearching ? (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400 space-y-4">
-                    <div className="w-12 h-12 border-4 border-lamitex-blue border-t-transparent rounded-full animate-spin"></div>
-                    <p>Consultando Google Maps e analisando perfil...</p>
+                <div className="flex flex-col items-center justify-center h-64 text-slate-400 space-y-6">
+                    <div className="w-16 h-16 border-4 border-lamitex-blue border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-lg font-bold">A Nath está consultando o Google Maps e analisando o perfil comercial...</p>
                 </div>
             ) : prospects.length > 0 ? (
-                <div className="space-y-6">
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-8">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {prospects.map((p, idx) => {
                         const prospectKey = `${p.companyName}-${p.address}`;
                         const isAdded = addedProspects.has(prospectKey);
 
                         return (
-                          <div key={idx} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-slate-50">
-                            <h4 className="font-bold text-slate-800 text-lg">{p.companyName}</h4>
-                            <p className="text-sm text-slate-500 mb-2">{p.address}</p>
-                            <div className="bg-blue-50 text-lamitex-blue text-xs inline-block px-2 py-1 rounded border border-blue-100 mb-4">
-                              Sugerir: {p.recommendedProduct}
+                          <div key={idx} className="border border-slate-200 rounded-3xl p-6 hover:shadow-xl transition-all bg-slate-50/50 group">
+                            <h4 className="font-black text-slate-800 text-xl mb-1">{p.companyName}</h4>
+                            <p className="text-sm text-slate-500 mb-4 font-bold">{p.address}</p>
+                            <div className="bg-blue-50 text-lamitex-blue text-xs font-black inline-block px-4 py-1.5 rounded-full border border-blue-100 mb-6 uppercase tracking-widest">
+                              Recomendado: {p.recommendedProduct}
                             </div>
                             <button
                               onClick={() => handleAddToPipeline(p)}
                               disabled={isAdded}
-                              className={`w-full py-2 font-semibold rounded transition-all flex items-center justify-center space-x-2 ${
+                              className={`w-full py-4 font-black rounded-2xl transition-all flex items-center justify-center space-x-3 text-base active:scale-95 ${
                                 isAdded 
-                                  ? 'bg-green-600 text-white cursor-default border border-green-600 shadow-sm' 
-                                  : 'bg-white border border-lamitex-blue text-lamitex-blue hover:bg-blue-50'
+                                  ? 'bg-green-600 text-white cursor-default border border-green-600 shadow-md' 
+                                  : 'bg-white border-2 border-lamitex-blue text-lamitex-blue hover:bg-lamitex-blue hover:text-white'
                               }`}
                             >
                               {isAdded ? (
                                 <>
-                                  <span>✅</span>
-                                  <span>Adicionado com sucesso</span>
+                                  <span className="text-xl">✅</span>
+                                  <span>Adicionado ao Pipeline</span>
                                 </>
                               ) : (
-                                <span>+ Adicionar ao Pipeline</span>
+                                <>
+                                  <span className="text-xl">+</span>
+                                  <span>Adicionar ao Pipeline</span>
+                                </>
                               )}
                             </button>
                           </div>
@@ -187,20 +189,20 @@ const ProspectingTool: React.FC<ProspectingToolProps> = ({ addLead }) => {
                       })}
                    </div>
 
-                   {/* Mandatory extraction and display of grounding URLs from Google Maps */}
+                   {/* Grounding URLs */}
                    {groundingLinks.length > 0 && (
-                     <div className="border-t pt-4">
-                       <h4 className="text-sm font-bold text-slate-600 mb-2 flex items-center">
-                         <span className="mr-2">🔗</span> Referências Diretas no Maps:
+                     <div className="border-t pt-8">
+                       <h4 className="text-base font-black text-slate-600 mb-4 flex items-center">
+                         <span className="mr-3 text-xl">🔗</span> Referências Oficiais no Maps:
                        </h4>
-                       <div className="flex flex-wrap gap-2">
+                       <div className="flex flex-wrap gap-3">
                          {groundingLinks.map((link, idx) => (
                            <a 
                              key={idx} 
                              href={link.uri} 
                              target="_blank" 
                              rel="noopener noreferrer"
-                             className="text-xs text-blue-600 hover:underline bg-blue-50 px-2 py-1 rounded border border-blue-100 transition-colors hover:bg-blue-100"
+                             className="text-xs font-black text-blue-600 hover:text-white hover:bg-blue-600 bg-blue-50 px-4 py-2 rounded-full border border-blue-100 transition-all uppercase tracking-widest"
                            >
                              {link.title}
                            </a>
@@ -209,22 +211,22 @@ const ProspectingTool: React.FC<ProspectingToolProps> = ({ addLead }) => {
                      </div>
                    )}
 
-                   {/* Fallback text display just in case */}
+                   {/* Resumo */}
                    {resultsText && !resultsText.includes("```json") && (
-                     <div className="mt-4 text-xs text-slate-400 border-t pt-4">
-                        <p className="font-bold mb-1">Resumo da IA:</p>
-                        <div className="whitespace-pre-line">{resultsText.replace(/```json[\s\S]*```/, '')}</div>
+                     <div className="mt-6 text-sm text-slate-600 border-t pt-8 bg-slate-50 p-6 rounded-3xl">
+                        <p className="font-black text-slate-800 mb-3 uppercase tracking-widest text-xs">Resumo da Análise Nath:</p>
+                        <div className="whitespace-pre-line leading-relaxed font-bold">{resultsText.replace(/```json[\s\S]*```/, '')}</div>
                      </div>
                    )}
                 </div>
             ) : resultsText ? (
-                <div className="prose prose-slate max-w-none text-sm">
+                <div className="prose prose-slate max-w-none text-base font-bold leading-relaxed p-4">
                    {resultsText}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center h-full text-slate-400 opacity-60">
-                    <span className="text-4xl mb-2">🏭</span>
-                    <p>Preencha os filtros acima para encontrar empresas.</p>
+                <div className="flex flex-col items-center justify-center h-64 text-slate-400 opacity-60">
+                    <span className="text-6xl mb-6">🏭</span>
+                    <p className="text-lg font-black uppercase tracking-widest">Encontre empresas agora</p>
                 </div>
             )}
         </div>
